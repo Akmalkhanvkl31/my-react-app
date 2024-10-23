@@ -1,23 +1,49 @@
-// OtpVerification.js
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 
-const OtpVerification = ({ onVerifyOtp }) => {
+function OtpVerification() {
   const [otp, setOtp] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleOtpVerification = async (e) => {
     e.preventDefault();
-    onVerifyOtp(otp);
+    
+    try {
+      const response = await fetch('/api/auth/verify-otp-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ otp }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Handle successful OTP verification
+      } else {
+        setError('OTP verification failed');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Something went wrong');
+    }
   };
 
   return (
     <div>
       <h2>OTP Verification</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} required />
+      <form onSubmit={handleOtpVerification}>
+        <input
+          type="text"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          placeholder="Enter OTP"
+        />
         <button type="submit">Verify OTP</button>
       </form>
+      {error && <p>{error}</p>}
     </div>
   );
-};
+}
 
 export default OtpVerification;

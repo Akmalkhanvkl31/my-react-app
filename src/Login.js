@@ -1,25 +1,56 @@
-// Login.js
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 
-const Login = ({ onLogin }) => {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    onLogin(email, password);
+    
+    try {
+      const response = await fetch('/api/auth/user/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Handle successful login, possibly redirect to OTP verification
+      } else {
+        setError('Login failed');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Something went wrong');
+    }
   };
 
   return (
     <div>
       <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+        />
         <button type="submit">Login</button>
       </form>
+      {error && <p>{error}</p>}
     </div>
   );
-};
+}
 
 export default Login;

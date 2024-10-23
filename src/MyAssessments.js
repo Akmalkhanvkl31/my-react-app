@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react';
+import { useState } from 'react';
 import { Search, ChevronDown, Filter, Plus, MoreHorizontal, ChevronLeft, ChevronRight, Bell, Home, FileText, Settings, Menu } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
